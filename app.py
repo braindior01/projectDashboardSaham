@@ -1,3 +1,4 @@
+# langkah awal set library pandas, regex, sqlite, flask, import page python reading and writing table, dan data cleansing
 import re
 import pandas as pd
 import sqlite3
@@ -10,11 +11,8 @@ from data_reading_and_writing import create_table_1, insert_to_table_1, create_t
 app = Flask(__name__, template_folder='templates')
 
 
-# TABLE_NAME = "Januari"
-
 # ******************************************
-# langkah awal set library pandas, regex, sqlite, flask, import page python reading and writing table, dan data cleansing
-
+# bikin homepage untuk function2 nya
 @app.route('/', methods=['GET', "POST"])
 def homepage():
     if request.method == 'POST':
@@ -29,27 +27,7 @@ def homepage():
         return render_template("homepage.html")
 
 # ******************************************
-# langkah selanjutnya buat function homepage dengan render html, sebagai UI agar user bisa menggunakan API (input text, input file, dan read index)
-
-@app.route('/text-processing',methods=['GET', 'POST'])
-def input_text():
-    if request.method == 'POST':
-        previous_text=request.form['inputText']
-        cleaned_text=processing_text(previous_text)
-        create_table()
-        insert_to_table(value_1=previous_text, 
-                        value_2=cleaned_text) 
-        json_response={'response':"SUCCESS",
-                       'previous_text': previous_text,
-                       'cleaned_text': cleaned_text
-                      }
-        json_response=jsonify(json_response)
-        return json_response
-    else:
-        return render_template("input_text.html")
-
-# ******************************************
-# langkah selanjutnya buat function input text processing, dimana user bisa input text yang selanjutnya akan di cleansing dan di record di table database (original dan cleaned text nya)
+# langkah selanjutnya buat function input file csv, dimana user bisa input file csv yang selanjutnya akan di record ke table database (buy dan sell)
 
 @app.route('/file-processing',methods=['GET', 'POST'])
 def input_file():
@@ -82,25 +60,6 @@ def input_file():
             return json_response
         return json_response
 
-        # if("Tweet" in df.columns):
-        #     list_of_tweets = df['Tweet'] #yang dari CSV
-        #     list_of_cleaned_tweet = df['Tweet'].apply(lambda x: processing_text(x)) #ini yang hasil cleaning-an
-
-        #     create_table()
-        #     for previous_text, cleaned_text in zip(list_of_tweets, list_of_cleaned_tweet): # disini di-looping barengan
-        #         insert_to_table(value_1=previous_text, value_2=cleaned_text)
-            
-        #     json_response={'response':"SUCCESS",
-        #                    'list_of_tweets': list_of_tweets[0],
-        #                    'list_of_cleaned_tweet': list_of_cleaned_tweet[0]
-        #                   }
-        #     json_response=jsonify(json_response)
-        #     return json_response
-        # else:
-        #     json_response={'ERROR_WARNING': "NO COLUMNS 'Tweet' APPEAR ON THE UPLOADED FILE"}
-        #     json_response = jsonify(json_response)
-        #     return json_response
-        # return json_response
     else:
         return render_template("test_file_input.html")
 
@@ -146,84 +105,6 @@ def read_database():
 def about():
     return render_template("About.html")
 
-
-# langkah selanjutnya buat function read index dan word mentioned, dimana user bisa cek entry untuk data tweet atau text yang terakhir di input dalam database 
-
-# @app.route('/',methods=['GET', "POST"])
-# def hello_world():
-#     text = request.form.get('inputText')
-#     json_response={
-#         'original_text': text,
-#         'cleaned_text': processing_text(text)
-#     }
-#     response_data = jsonify(json_response)
-#     return render_template("index_2.html")
-
-# @app.route("/<tweet>", methods=['GET'])
-# def cleansing(tweet):
-#     cleaned_tweet = processing_text(tweet)
-#     response_data = jsonify({"previous_tweet":tweet, "cleaned_tweet":cleaned_tweet})
-#     return response_data
-
-# @app.route('/input-processing-2',methods=['GET'])
-# def input_processing_2():
-#     # text = request.form.get('text')
-#     # cleaned_tweet = processing_text(text)
-#     # results = read_table(table_name=TABLE_NAME)
-#     # last_index = len(results)
-#     # insert_to_table(value_1=last_index, 
-#     #                 value_2=cleaned_tweet, 
-#     #                 table_name=TABLE_NAME) 
-#     response_data = jsonify({"response":"INPUT_PROCESSING_2"})
-#     return response_data
-
-
-
-# @swag_from("docs/input_processing.yml", methods=['POST'])
-# @app.route('/input-processing',methods=['POST'])
-# def input_processing():
-#     text = request.form.get('text')
-#     cleaned_tweet = processing_text(text)
-#     results = read_table(table_name=TABLE_NAME)
-#     last_index = len(results)
-#     insert_to_table(value_1=last_index, 
-#                     value_2=cleaned_tweet, 
-#                     table_name=TABLE_NAME)
-    
-#     response_data = jsonify({"response":"SUCCESS"})
-#     return response_data
-
-
-# @swag_from("docs/file_processing.yml", methods=['POST'])
-# @app.route('/file-processing',methods=['POST'])
-# def file_processing():
-#     """
-#         Memproses file yang akan di upload di swagger_ui atau di HTML.
-#     """
-#     # 1 method untuk upload file
-#     # df = pd.read_csv('data/data.csv', encoding='latin1') # baca datanya
-#     create_table() # create tablenya
-#     df = request.form.get('upload_file')
-#     print(df)
-#     df = pd.read_csv(df)
-#     # iterasi untuk setiap tweet yang ada di kolom tweet yang ada di dataframe 'DF'
-#     for idx, tweet in enumerate(df['Tweet']):
-#         cleaned_tweet = processing_text(tweet) # process tweetnya
-#         insert_to_table(value_1=idx,
-#                         value_2=cleaned_tweet, 
-#                         table_name=TABLE_NAME) # insert to table tweet yang sudah di cleaned.
-    
-#     response_data = jsonify({"response":"SUCCESS"}) # karena kita ga butuh response apa2 dari proses ini, selama tidak ada error, return "SUCCESS"
-#     return response_data
-
-# @swag_from("docs/read_index_data.yml", methods=['POST'])
-# @app.route('/read-index-data',methods=['POST'])
-# def read_index_data():
-#     index = request.form.get('index')
-#     result = read_table(target_index=int(index),
-#                          table_name=TABLE_NAME)
-#     response_data = jsonify({"tweets":result})
-#     return response_data
 
 
 if __name__ == '__main__':
