@@ -2,6 +2,8 @@
 import re
 import pandas as pd
 import sqlite3
+from datetime import date
+from datetime import timedelta
 
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 
@@ -39,14 +41,16 @@ def input_file():
             BVal = df['BVal']
             SCode = df['SCode']
             SVal = df['SVal']
+            today = date.today()
+            yesterday = today - timedelta(days = 15)
             print(BCode)
             create_table_1()
             create_table_2()
             for EmitenBuy, BuyVal in zip(BCode, BVal):
-                insert_to_table_1(value_1=EmitenBuy, value_2=BuyVal)
+                insert_to_table_1(value_1=EmitenBuy, value_2=BuyVal, value_3=today)
 
             for EmitenSell, SellVal in zip(SCode, SVal):
-                insert_to_table_2(value_1=EmitenSell, value_2=SellVal)
+                insert_to_table_2(value_1=EmitenSell, value_2=SellVal, value_3=today)
 
             json_response={'response':"SUCCESS",
                            'total emiten': 'Ok',

@@ -6,28 +6,28 @@ conn = sqlite3.connect('data/tmp.db', check_same_thread=False)
 # langkah awal import library sqlite, kemudian membuat data tmp.db dalam folder data
 
 def create_table_1():
-    conn.execute("""CREATE TABLE IF NOT EXISTS Buy (id INTEGER PRIMARY KEY AUTOINCREMENT, EmitenBuy char, BuyVal int)""")
+    conn.execute("""CREATE TABLE IF NOT EXISTS Buy (id INTEGER PRIMARY KEY AUTOINCREMENT, EmitenBuy char, BuyVal int, unix_date date)""")
     conn.commit()
 
 # *********************************************
 
 def create_table_2():
-    conn.execute("""CREATE TABLE IF NOT EXISTS Sell (id INTEGER PRIMARY KEY AUTOINCREMENT, EmitenSell char, SellVal int)""")
+    conn.execute("""CREATE TABLE IF NOT EXISTS Sell (id INTEGER PRIMARY KEY AUTOINCREMENT, EmitenSell char, SellVal int, unix_date date)""")
     conn.commit()
 
 # *********************************************
 # langkah selanjutnya membuat table dalam database untuk dapat di isi oleh data dari API
 
-def insert_to_table_1(value_1, value_2):
-    query = f"INSERT INTO Buy (EmitenBuy,BuyVal) VALUES (?, ?);"
-    cursors = conn.execute(query, (value_1, value_2))
+def insert_to_table_1(value_1, value_2, value_3):
+    query = f"INSERT INTO Buy (EmitenBuy,BuyVal,unix_date) VALUES (?, ?, ?);"
+    cursors = conn.execute(query, (value_1, value_2, value_3))
     conn.commit()
 
 # *********************************************
 
-def insert_to_table_2(value_1, value_2):
-    query = f"INSERT INTO Sell (EmitenSell,SellVal) VALUES (?, ?);"
-    cursors = conn.execute(query, (value_1, value_2))
+def insert_to_table_2(value_1, value_2, value_3):
+    query = f"INSERT INTO Sell (EmitenSell,SellVal,unix_date) VALUES (?, ?, ?);"
+    cursors = conn.execute(query, (value_1, value_2, value_3))
     conn.commit()
 
 
