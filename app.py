@@ -25,6 +25,8 @@ def homepage():
             return redirect(url_for("input_file"))
         elif go_to_page == "3":
             return redirect(url_for("read_database"))
+        elif go_to_page == "4":
+            return redirect(url_for("show_table"))
     else:
         return render_template("homepage.html")
 
@@ -109,6 +111,16 @@ def read_database():
 def about():
     return render_template("About.html")
 
+@app.route('/show-table', methods=['GET'])
+def show_table():
+    # Assuming read_table is a function that fetches data from your SQL table and returns a pandas DataFrame
+    df = read_table()
+
+    # Convert DataFrame to HTML
+    table = df.to_html()
+
+    # Render the HTML in your Flask app
+    return render_template("show_table.html", table=table)
 
 
 if __name__ == '__main__':
